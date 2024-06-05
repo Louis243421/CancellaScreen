@@ -3,7 +3,7 @@
 cancella()
 {    
  	local CONT=0
- 	for file in /Users/luigi/Desktop/Screenshot*alle*.png  # cicla attraverso tutti i file png che contengono "Screenshot" e "alle"
+ 	for file in $2/Screenshot*alle*.png  # cicla attraverso tutti i file png che contengono "Screenshot" e "alle"
  	do
  	nuovo_nome=`echo $file | sed "s/ //g"`  # elimina gli spazi dal nome del file
  	mv "$file" "$nuovo_nome"
@@ -33,5 +33,9 @@ secondi=$(date '+%S')
 echo $ore:$minuti:$secondi
 let "avvioProgramma = $ore*3600+$minuti*60+$secondi"
 echo $avvioProgramma
-cancella $avvioProgramma
+if [[$# -eq 0 || $# -ge 2]]; then
 
+	echo "Il programma accetta solo un parametro"
+else
+	cancella $avvioProgramma $1
+fi
