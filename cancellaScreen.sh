@@ -1,5 +1,21 @@
 #!/bin/bash 
-        
+
+posizioneUltimaE()
+{
+	nome=$1
+	posizione=0
+	for (( i = 0 ; i < ${#nome} ; i++ )) ; do
+		if [[ ${nome:$i:1} == "e" ]] ; then
+			posizione=$i
+
+		fi
+
+	done
+
+	return $posizione
+
+
+}        
 cancella()
 {    
  	local CONT=0
@@ -10,11 +26,15 @@ cancella()
  	file=$nuovo_nome
  	if [[ -f $file ]] ; then  # se esiste il file regolare  (png è regolare a quanto pare)
  		echo "Trovato file:" $file
- 		oreFile=${file:24:2}  # sottostringa che parte da posizione 24 di 2 caratteri (ora di creazione)
- 		minutiFile=${file:27:2}
- 		secondiFile=${file:30:2}
+ 		posizioneUltimaE $file
+ 		orario=${file:($?+1):8}
+ 		echo $orario
+ 		oreFile=${orario:0:2}  # sottostringa che parte da posizione 24 di 2 caratteri (ora di creazione)
+ 		minutiFile=${orario:3:2}
+ 		secondiFile=${orario:6:2}
  		let "creazioneFile = $oreFile*3600+$minutiFile*60+$secondiFile"
- 		if [[ $creazioneFile -ge $(( $1-300)) ]]; then
+ 		echo $creazioneFile
+ 		if [[ $creazioneFile -lt $(( $1-300)) ]]; then
  			echo "File eliminato:" $file
  			rm -f $file
  			((CONT++))
@@ -33,7 +53,7 @@ secondi=$(date '+%S')
 echo $ore:$minuti:$secondi
 let "avvioProgramma = $ore*3600+$minuti*60+$secondi"
 echo $avvioProgramma
-if [[$# -eq 0 || $# -ge 2]]; then
+if [[ $# -eq 0 || $# -ge 2 ]]; then
 
 	echo "Il programma accetta solo un parametro"
 else
